@@ -4,27 +4,35 @@ using System.IO;
 
 public class Transaction
 {
+    public const string filePath = "balance.txt";
+
+
     public static void CreateTransactions (int amount)
     {
-        bool is_balance_int = int.TryParse(File.ReadLines("balance.txt").FirstOrDefault(),
+        bool isBalanceInt = int.TryParse(File.ReadLines(filePath).FirstOrDefault(),
                                 out int balance);
-        if (!is_balance_int)
+        if (!isBalanceInt)
         {
             throw new InvalidOperationException("file balance.txt was broken," +
                 " delete them and restart program");
         }
         balance += amount;
+        if (balance < 0)
+        {
+            Console.WriteLine("I can't have money less 0");
+            return;
+        }
         string log = $"{DateTime.Now}; AMOUNT = {amount}; BALANCE = {balance}\n\n";
-        File.AppendAllText("balance.txt", log ); 
-        string[] fileStrings = File.ReadAllLines("balance.txt");
+        File.AppendAllText(filePath, log ); 
+        string[] fileStrings = File.ReadAllLines(filePath);
         fileStrings[0] = balance.ToString();
-        File.WriteAllLines("balance.txt", fileStrings);
-        
+        File.WriteAllLines(filePath, fileStrings);
+        Console.WriteLine("\nDone");
     }
 
     public static void ReadTransactions()
     {
-        string[] fileStrings = File.ReadAllLines("balance.txt");
+        string[] fileStrings = File.ReadAllLines(filePath);
         for (int i = 0; i < fileStrings.Length; i++)
         {
             if (i != 0)
@@ -36,9 +44,9 @@ public class Transaction
 
     public static int GetBalance()
     {
-        bool is_balance_int = int.TryParse(File.ReadLines("balance.txt").FirstOrDefault(),
+        bool isBalanceInt = int.TryParse(File.ReadLines(filePath).FirstOrDefault(),
                                 out int balance);
-        if (!is_balance_int)
+        if (!isBalanceInt)
         {
             throw new InvalidOperationException("file balance.txt was broken," +
                 " delete them and restart program");

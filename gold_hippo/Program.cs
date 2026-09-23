@@ -5,9 +5,9 @@ class Program
 {
     static void Main(string[] args)
     {
-        if (!File.Exists("balance.txt"))
+        if (!File.Exists(Logics.Transaction.filePath))
         {
-            File.WriteAllText("balance.txt", "0\n\n");
+            File.WriteAllText(Logics.Transaction.filePath, "0\n\n");
         }
         Console.WriteLine("\nHi I'm Gold Hippo your moneybox :)\n");
         Console.WriteLine("Write a number of action");
@@ -21,22 +21,28 @@ class Program
             {
                 break;
             }
-            if (choice == "1" || choice == "2")
+            if (choice == "1")
             {
-                Console.Write("\nWrite amount: ");
-                bool is_int = int.TryParse(Console.ReadLine(), out int amount);
-                if (!is_int)
+                int amount = WriteAmount();
+                if (amount == 0)
                 {
-                    Console.WriteLine("\nI need a number like 100");
                     continue;
                 }
-                if (choice == "2")
-                {
-                    amount = -amount;
-                }
                 Logics.Transaction.CreateTransactions(amount);
-                Console.WriteLine("\nDone");
+                
             }
+            if (choice == "2")
+            {
+                int amount = WriteAmount();
+                if (amount == 0)
+                {
+                    continue;
+                }
+                Logics.Transaction.CreateTransactions(-amount);
+                
+
+            }
+
             if (choice == "3")
             {
                 int balance = Logics.Transaction.GetBalance();
@@ -46,6 +52,17 @@ class Program
             {
                 Logics.Transaction.ReadTransactions();
             }
+        }
+        static int WriteAmount()
+        {
+            Console.Write("\nWrite amount: ");
+            bool isInt = int.TryParse(Console.ReadLine(), out int amount);
+            if (!isInt || amount < 0)
+            {
+                Console.WriteLine("\nI need a positive number like 100");
+                return 0;
+            }
+            return amount;
         }
 
     } 
